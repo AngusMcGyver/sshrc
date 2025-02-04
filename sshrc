@@ -60,6 +60,7 @@ EOF
             echo $'"$(tar czf - -h -C $SSHHOME $files | openssl enc -base64)"' | tr -s ' ' $'\n' | openssl enc -base64 -d | tar mxzf - -C \$SSHHOME
             export SSHHOME=\$SSHHOME
             echo \"$CMDARG\" >> \$SSHHOME/sshrc.bashrc
+            echo \"$CD_TO_DIR\" >> \$SSHHOME/sshrc.bashrc
             bash --rcfile \$SSHHOME/sshrc.bashrc
             "
     else
@@ -71,6 +72,8 @@ EOF
 function sshrc_parse() {
   while [[ -n $1 ]]; do
     case $1 in
+      --cd )
+        CD_TO_DIR="cd $2"; shift ;;
       -b | -c | -D | -E | -e | -F | -I | -i | -J | -L | -l | -m | -O | -o | -p | -Q | -R | -S | -W | -w )
         SSHARGS="$SSHARGS $1 $2"; shift ;;
       -* )
